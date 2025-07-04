@@ -32,6 +32,7 @@ public class StudentModule extends javax.swing.JFrame {
         initComponents();
         fetch();
         tblStudents.addMouseListener(new java.awt.event.MouseAdapter() {
+    @Override
     public void mouseClicked(java.awt.event.MouseEvent evt) {
         if (evt.getClickCount() == 2) { // double-click
             int row = tblStudents.getSelectedRow();
@@ -244,12 +245,25 @@ public class StudentModule extends javax.swing.JFrame {
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         // TODO add your handling code here:
-          txtID.setText("");
+        clear();
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    public void clear(){
+        txtID.setText("");
         txtLastName.setText("");
         txtFirstName.setText("");
         txtAge.setText("");
-    }//GEN-LAST:event_btnClearActionPerformed
-
+    }
+    
+    public void alert(String msg){
+        JOptionPane.showMessageDialog(rootPane, msg);
+    }
+    
+    public void alert(String msg, String title){
+        JOptionPane.showMessageDialog(rootPane, msg,title,JOptionPane.ERROR_MESSAGE);
+    }
+    
+    
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
     String fname = txtFirstName.getText().trim();
@@ -281,10 +295,7 @@ public class StudentModule extends javax.swing.JFrame {
     }
 
     // Clear the fields after operation
-    txtID.setText("");
-    txtLastName.setText("");
-    txtFirstName.setText("");
-    txtAge.setText("");
+    clear();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -320,41 +331,47 @@ public class StudentModule extends javax.swing.JFrame {
     }
 
     // Clear fields after update
-    txtID.setText("");
-    txtLastName.setText("");
-    txtFirstName.setText("");
-    txtAge.setText("");
+    clear();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-         int i = tblStudents.getSelectedRow();
+          int i = tblStudents.getSelectedRow();
         if (i >= 0) {
             int option = JOptionPane.showConfirmDialog(rootPane,
-                    "Are you sure you want to delete this record?", "Delete Confirmation", JOptionPane.YES_NO_OPTION);
-
-            if (option == JOptionPane.YES_OPTION) {
+                    "Are you sure you want to Delete?", "Delete confirmation", JOptionPane.YES_NO_OPTION);
+            if (option == 0) {
                 TableModel model = tblStudents.getModel();
+ 
                 String id = model.getValueAt(i, 0).toString();
-
-                try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/oopdb", "root", "");
-                    String sql = "DELETE FROM tblstudents WHERE id = '" + id + "'";
-                    st = con.createStatement();
-                    st.executeUpdate(sql);
+                if (tblStudents.getSelectedRows().length == 1) {
+                    delete(id);
+                    DefaultTableModel model1 = (DefaultTableModel) tblStudents.getModel();
+                    model1.setRowCount(0);
                     fetch();
-                    JOptionPane.showMessageDialog(this, "Record successfully deleted.");
-                } catch (ClassNotFoundException | SQLException ex) {
-                    Logger.getLogger(StudentModule.class.getName()).log(Level.SEVERE, null, ex);
+                    clear();
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Please select a row to delete.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            alert("Please select a row to delete");
         }
-        
+        clear();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+     public void delete(String id) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/oopdb", "root", "");
+            String sql = "DELETE FROM `tblstudents` WHERE id='" + id + "'";
+            st = con.createStatement();
+            st.execute(sql);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(StudentModule.class.getName()).log(Level.SEVERE, null, ex);
+            //allows you to get an instance of a logger and then log a message with the given Level (severe) containing the exception's (ex) stacktrace.
+        }
+        fetch();
+    }
+    
     private void tblStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStudentsMouseClicked
         // TODO add your handling code here:
         int i = tblStudents.getSelectedRow();
