@@ -101,7 +101,13 @@ public class StudentModule extends javax.swing.JFrame {
         txtAge = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Student Module");
+        setBackground(new java.awt.Color(255, 153, 153));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
+        jScrollPane1.setBackground(new java.awt.Color(255, 153, 153));
+
+        tblStudents.setBackground(new java.awt.Color(255, 204, 204));
         tblStudents.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -128,6 +134,8 @@ public class StudentModule extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblStudents.setFocusable(false);
+        tblStudents.setGridColor(new java.awt.Color(255, 102, 102));
         tblStudents.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblStudentsMouseClicked(evt);
@@ -178,6 +186,8 @@ public class StudentModule extends javax.swing.JFrame {
         });
 
         txtID.setEditable(false);
+
+        txtLastName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -298,42 +308,68 @@ public class StudentModule extends javax.swing.JFrame {
     clear();
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
-    String fname = txtFirstName.getText().trim();
-    String lname = txtLastName.getText().trim();
-    String id = txtID.getText().trim();
-    String age = txtAge.getText().trim();
-
-    if (!fname.isEmpty() && !lname.isEmpty() && !id.isEmpty()) {
+     public void addStudent(String id, String lname, String fname, String age) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/oopdb", "root", "");
-            String sql = "SELECT * FROM tblstudents WHERE id='" + id + "'";
+            String sql = "INSERT INTO `tblstudents`(`lastname`, `firstname`, `age`) " +
+             "VALUES ('" + lname + "','" + fname + "','" + age + "')";
             st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-
-            if (rs.next()) {
-                // Update the existing record
-                String updateSql = "UPDATE tblstudents SET lastname='" + lname + "', firstname='" + fname + "', age='" + age + "' WHERE id='" + id + "'";
-                st.executeUpdate(updateSql);
-                fetch(); // refresh the table
-                JOptionPane.showMessageDialog(this, "Update was successful.");
-            } else {
-                JOptionPane.showMessageDialog(this, "There is no such student.", "Update Error", JOptionPane.ERROR_MESSAGE);
-            }
-
+            st.execute(sql);
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(StudentModule.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "There is nothing to update.", "No row selected", JOptionPane.WARNING_MESSAGE);
+        fetch();
     }
-
-    // Clear fields after update
-    clear();
+    
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+     String fname = txtFirstName.getText().trim();
+        String lname = txtLastName.getText().trim();
+        String id = txtID.getText().trim();
+        String age = txtAge.getText().trim();
+       
+        if (!fname.isEmpty() && !lname.isEmpty() && !id.isEmpty()) {
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/oopdb", "root", "");
+                String sql = "select * from tblStudents where id='" + id + "'";
+                st = con.createStatement();
+                ResultSet rs = st.executeQuery(sql);
+               
+                if(rs.next()==true){  
+                    update(id, lname, fname, age);
+                    DefaultTableModel model = (DefaultTableModel) tblStudents.getModel();
+                    model.setRowCount(0);                  
+                    fetch();
+                    alert("Update was successful");
+                   
+                } else {
+                    alert("There is no such student", "Update error");
+                    clear();
+                }
+ 
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(StudentModule.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            alert("There is nothing to update :(","No row selected");
+        }
+        clear();
     }//GEN-LAST:event_btnUpdateActionPerformed
-
+     public void update(String id, String lname, String fname, String age) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/oopdb", "root", "");
+            String sql = "UPDATE `tblstudents`SET lastname='" + lname + "', firstname='" + fname+ "', age='" + age + "' WHERE id='" + id + "'";
+            st = con.createStatement();
+            st.execute(sql);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(StudentModule.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         fetch();
+    }
+    
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
           int i = tblStudents.getSelectedRow();
@@ -435,4 +471,5 @@ public class StudentModule extends javax.swing.JFrame {
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtLastName;
     // End of variables declaration//GEN-END:variables
+
 }
