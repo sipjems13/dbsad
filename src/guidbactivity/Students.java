@@ -13,12 +13,14 @@ public class Students {
     private String lname;
     private String fname;
     private String age;
+    private String address;
 
-    public Students(String id, String lname, String fname, String age) {
+    public Students(String id, String lname, String fname, String age, String address) {
         this.id = id;
         this.lname = lname;
         this.fname = fname;
         this.age = age;
+        this.address = address;
     }
 
     public String getId() {
@@ -35,5 +37,8 @@ public class Students {
 
     public String getAge() {
         return age;
+    }
+    public String getAddress() {
+        return address;
     }
 }

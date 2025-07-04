@@ -42,6 +42,7 @@ public class StudentModule extends javax.swing.JFrame {
                 txtLastName.setText(model.getValueAt(row, 1).toString());
                 txtFirstName.setText(model.getValueAt(row, 2).toString());
                 txtAge.setText(model.getValueAt(row, 3).toString());
+                txtAddress.setText(model.getValueAt(row, 4).toString());
             }
         }
     }   
@@ -59,16 +60,17 @@ public class StudentModule extends javax.swing.JFrame {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
-                Students user = new Students(rs.getString("id"),rs.getString("lastname"),rs.getString("firstname"),rs.getString("age"));
+                Students user = new Students(rs.getString("id"),rs.getString("lastname"),rs.getString("firstname"),rs.getString("age"), rs.getString("address"));
                 students.add(user);
             }
             DefaultTableModel model2 = (DefaultTableModel)tblStudents.getModel();
             for (Students user : students){
-                Object[] row = new Object[4];
+                Object[] row = new Object[5];  
                 row[0] = user.getId();
                 row[1] = user.getLname();
                 row[2] = user.getFname();
                 row[3] = user.getAge();
+                row[4] = user.getAddress(); 
                 model2.addRow(row);
             }
         }catch(ClassNotFoundException | SQLException ex){
@@ -99,6 +101,8 @@ public class StudentModule extends javax.swing.JFrame {
         txtLastName = new javax.swing.JTextField();
         txtFirstName = new javax.swing.JTextField();
         txtAge = new javax.swing.JTextField();
+        lblAddress = new javax.swing.JLabel();
+        txtAddress = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Student Module");
@@ -110,20 +114,20 @@ public class StudentModule extends javax.swing.JFrame {
         tblStudents.setBackground(new java.awt.Color(255, 204, 204));
         tblStudents.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Student Id", "Last Name", "First Name", "Age"
+                "Student Id", "Last Name", "First Name", "Age", "Address"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -147,6 +151,7 @@ public class StudentModule extends javax.swing.JFrame {
             tblStudents.getColumnModel().getColumn(1).setResizable(false);
             tblStudents.getColumnModel().getColumn(2).setResizable(false);
             tblStudents.getColumnModel().getColumn(3).setResizable(false);
+            tblStudents.getColumnModel().getColumn(4).setResizable(false);
         }
 
         lblStudentId.setText("Student Id");
@@ -189,6 +194,8 @@ public class StudentModule extends javax.swing.JFrame {
 
         txtLastName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
 
+        lblAddress.setText("Address");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -197,12 +204,14 @@ public class StudentModule extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblStudentId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblLN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblFN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblStudentId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblLN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblFN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblAddress))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -212,6 +221,7 @@ public class StudentModule extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnClear))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(txtAddress, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(txtID, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(txtLastName, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(txtFirstName, javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,7 +247,11 @@ public class StudentModule extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblAge)
                     .addComponent(txtAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblAddress)
+                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd)
                     .addComponent(btnUpdate)
@@ -263,6 +277,7 @@ public class StudentModule extends javax.swing.JFrame {
         txtLastName.setText("");
         txtFirstName.setText("");
         txtAge.setText("");
+        txtAddress.setText("");
     }
     
     public void alert(String msg){
@@ -279,6 +294,7 @@ public class StudentModule extends javax.swing.JFrame {
     String fname = txtFirstName.getText().trim();
     String lname = txtLastName.getText().trim();
     String age = txtAge.getText().trim();
+    String address = txtAddress.getText().trim();
 
     if (!fname.isEmpty() && !lname.isEmpty()) {
         try {
@@ -291,7 +307,7 @@ public class StudentModule extends javax.swing.JFrame {
             if (rs.next()) {
                 JOptionPane.showMessageDialog(this, "This student record already exists.", "Insert Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                String insertSql = "INSERT INTO tblstudents (lastname, firstname, age) VALUES ('" + lname + "', '" + fname + "', '" + age + "')";
+                String insertSql = "INSERT INTO tblstudents (lastname, firstname, age, address) VALUES ('" + lname + "', '" + fname + "', '" + age + "', '" + address + "')";
                 st.executeUpdate(insertSql);
                 fetch(); // refresh the table
                 JOptionPane.showMessageDialog(this, "Record has been successfully added.");
@@ -304,16 +320,17 @@ public class StudentModule extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "First Name and Last Name are required.", "Input Error", JOptionPane.WARNING_MESSAGE);
     }
 
+
     // Clear the fields after operation
     clear();
     }//GEN-LAST:event_btnAddActionPerformed
 
-     public void addStudent(String id, String lname, String fname, String age) {
+     public void addStudent(String id, String lname, String fname, String age, String address) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/oopdb", "root", "");
-            String sql = "INSERT INTO `tblstudents`(`lastname`, `firstname`, `age`) " +
-             "VALUES ('" + lname + "','" + fname + "','" + age + "')";
+            String sql = "INSERT INTO `tblstudents`(`lastname`, `firstname`, `age`, `address`) " +
+             "VALUES ('" + lname + "','" + fname + "','" + age + "','" + address + "')";
             st = con.createStatement();
             st.execute(sql);
         } catch (ClassNotFoundException | SQLException ex) {
@@ -328,6 +345,7 @@ public class StudentModule extends javax.swing.JFrame {
         String lname = txtLastName.getText().trim();
         String id = txtID.getText().trim();
         String age = txtAge.getText().trim();
+        String address = txtAddress.getText().trim();
        
         if (!fname.isEmpty() && !lname.isEmpty() && !id.isEmpty()) {
             try {
@@ -338,7 +356,7 @@ public class StudentModule extends javax.swing.JFrame {
                 ResultSet rs = st.executeQuery(sql);
                
                 if(rs.next()==true){  
-                    update(id, lname, fname, age);
+                    update(id, lname, fname, age, address);
                     DefaultTableModel model = (DefaultTableModel) tblStudents.getModel();
                     model.setRowCount(0);                  
                     fetch();
@@ -357,11 +375,11 @@ public class StudentModule extends javax.swing.JFrame {
         }
         clear();
     }//GEN-LAST:event_btnUpdateActionPerformed
-     public void update(String id, String lname, String fname, String age) {
+     public void update(String id, String lname, String fname, String age, String address) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/oopdb", "root", "");
-            String sql = "UPDATE `tblstudents`SET lastname='" + lname + "', firstname='" + fname+ "', age='" + age + "' WHERE id='" + id + "'";
+            String sql = "UPDATE `tblstudents`SET lastname='" + lname + "', firstname='" + fname+ "', age='" + age + "', address ='" + address +"' WHERE id='" + id + "'";
             st = con.createStatement();
             st.execute(sql);
         } catch (ClassNotFoundException | SQLException ex) {
@@ -416,6 +434,7 @@ public class StudentModule extends javax.swing.JFrame {
         txtLastName.setText(model.getValueAt(i, 1).toString());
         txtFirstName.setText(model.getValueAt(i, 2).toString());
         txtAge.setText(model.getValueAt(i, 3).toString());
+        txtAddress.setText(model.getValueAt(i, 4).toString());
     }//GEN-LAST:event_tblStudentsMouseClicked
 
     
@@ -461,11 +480,13 @@ public class StudentModule extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblAddress;
     private javax.swing.JLabel lblAge;
     private javax.swing.JLabel lblFN;
     private javax.swing.JLabel lblLN;
     private javax.swing.JLabel lblStudentId;
     private javax.swing.JTable tblStudents;
+    private javax.swing.JTextField txtAddress;
     private javax.swing.JTextField txtAge;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtID;
